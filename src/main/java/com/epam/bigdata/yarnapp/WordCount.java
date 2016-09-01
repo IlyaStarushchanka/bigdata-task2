@@ -99,12 +99,14 @@ public class WordCount {
             for (String u : urls) {
                 System.out.println(u);
                 Document d = null;
+                String text = "";
                 try {
                     d = Jsoup.connect(u).get();
+                    text = d.body().text();
                 } catch (IOException e) {
                     System.out.println("Can't connect to " + u);
                 }
-                String text = d.body().text();
+
 
                 StringTokenizer tokenizer = new StringTokenizer(text, " .,?!:;()<>[]\b\t\n\f\r\"\'\\");
                 List<String> words = new ArrayList<String>();
