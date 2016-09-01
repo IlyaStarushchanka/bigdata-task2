@@ -36,13 +36,13 @@ public class WordCount {
     private int tempContainer;
 
     public WordCount() {
-        System.out.println("HelloYarn!");
+        System.out.println("WordCount!");
     }
 
     public WordCount(int tempContainer, int containerCount) {
         this.tempContainer = tempContainer;
         this.containerCount = containerCount;
-        System.out.println("HelloYarn!");
+        System.out.println("WordCount!");
     }
 
     public static long bytesToMegabytes(long bytes) {

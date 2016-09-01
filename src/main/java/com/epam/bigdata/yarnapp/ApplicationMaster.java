@@ -155,7 +155,7 @@ public class ApplicationMaster {
      */
     @SuppressWarnings({"unchecked"})
     public void run() throws Exception {
-        LOG.info("Running MyApplicationMaster");
+        LOG.info("Running ApplicationMaster");
 
         // Initialize clients to ResourceManager and NodeManagers
         AMRMClient<ContainerRequest> amRMClient = AMRMClient.createAMRMClient();
