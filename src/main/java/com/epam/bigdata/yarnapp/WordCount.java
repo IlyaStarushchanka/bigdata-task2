@@ -1,9 +1,6 @@
 package com.epam.bigdata.yarnapp;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -47,27 +44,27 @@ public class WordCount {
     }
 
     public void searchWords() {
-        try{
+        try {
             Pattern p = Pattern.compile("http[s]*:[^\\s\\r\\n]+");
             List<String> urls = new ArrayList<String>();
 
-            Path pt=new Path(Constants.FILE_DESTINATION + inputFile);
+            Path pt = new Path(Constants.FILE_DESTINATION + inputFile);
 
             FileSystem fs2 = FileSystem.get(new Configuration());
             Configuration conf = new Configuration();
             conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
             conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
 
-            FileSystem fs = FileSystem.get(new URI("hdfs://sandbox.hortonworks.com:8020"),conf);
-            BufferedReader br=new BufferedReader(new InputStreamReader(fs.open(pt)));
+            FileSystem fs = FileSystem.get(new URI("hdfs://sandbox.hortonworks.com:8020"), conf);
+            BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(pt)));
             List<String> lines = new ArrayList<String>();
 
-            String line=br.readLine();
+            String line = br.readLine();
             String topLine = line;
-            line=br.readLine();
-            while (line != null){
+            line = br.readLine();
+            while (line != null) {
                 lines.add(line.trim());
-                line=br.readLine();
+                line = br.readLine();
             }
 
             int offset, count;
@@ -101,7 +98,12 @@ public class WordCount {
             List<List<String>> totalTopWords = new ArrayList<>();
             for (String u : urls) {
                 System.out.println(u);
-                Document d = Jsoup.connect(u).get();
+                Document d = null;
+                try {
+                    d = Jsoup.connect(u).get();
+                } catch (IOException e) {
+                    System.out.println("Can't connect to " + u);
+                }
                 String text = d.body().text();
 
                 StringTokenizer tokenizer = new StringTokenizer(text, " .,?!:;()<>[]\b\t\n\f\r\"\'\\");
@@ -165,8 +167,8 @@ public class WordCount {
             }catch(Exception e) {
                 System.out.println(e.getMessage());
             }
-        }catch(Exception e){
-            System.out.println(e.getMessage());
+        } catch (Exception e){
+
         }
     }
 
