@@ -101,6 +101,8 @@ public class Client {
         opts.addOption("container_memory", true, "Amount of memory in MB to be requested to run the HelloYarn");
         opts.addOption("container_vcores", true, "Amount of virtual cores to be requested to run the HelloYarn");
         opts.addOption("num_containers", true, "No. of containers on which the HelloYarn needs to be executed");
+        opts.addOption("inputFile", true, "Path to input file from hdfs");
+        opts.addOption("outputFolder", true, "Path to output folder for output files");
         opts.addOption("help", false, "Print usage");
     }
 
@@ -131,7 +133,7 @@ public class Client {
             return false;
         }
 
-        appName = cliParser.getOptionValue("appname", "HelloYarn");
+        appName = cliParser.getOptionValue("appname", "WordCount");
         amPriority = Integer.parseInt(cliParser.getOptionValue("priority", "0"));
         amQueue = cliParser.getOptionValue("queue", "default");
         amMemory = Integer.parseInt(cliParser.getOptionValue("master_memory", "10"));
