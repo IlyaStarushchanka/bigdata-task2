@@ -100,6 +100,7 @@ public class WordCount {
             System.out.println("STEP 2 " +urls.size());
             List<List<String>> totalTopWords = new ArrayList<>();
             for (String u : urls) {
+                System.out.println(u);
                 Document d = Jsoup.connect(u).get();
                 String text = d.body().text();
 
