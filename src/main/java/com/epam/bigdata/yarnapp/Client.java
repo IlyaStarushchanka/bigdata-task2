@@ -27,6 +27,9 @@ import java.util.*;
 public class Client {
     private static final Log LOG = LogFactory.getLog(Client.class);
 
+    private String inputFile;
+    private String outputFolder;
+
     // Start time for client
     private final long clientStartTime = System.currentTimeMillis();
 
@@ -152,6 +155,9 @@ public class Client {
         containerMemory = Integer.parseInt(cliParser.getOptionValue("container_memory", "10"));
         containerVirtualCores = Integer.parseInt(cliParser.getOptionValue("container_vcores", "1"));
         numContainers = Integer.parseInt(cliParser.getOptionValue("num_containers", "1"));
+        inputFile = cliParser.getOptionValue("inputFile","tmp/admin/user.profile.tags.us.txt");
+        outputFolder = cliParser.getOptionValue("outputFolder","tmp/admin/");
+
 
         if (containerMemory < 0 || containerVirtualCores < 0 || numContainers < 1) {
             throw new IllegalArgumentException("Invalid no. of containers or container memory/vcores specified,"
@@ -278,6 +284,8 @@ public class Client {
         vargs.add("--container_vcores " + String.valueOf(containerVirtualCores));
         vargs.add("--num_containers " + String.valueOf(numContainers));
         vargs.add("--priority " + String.valueOf(requestPriority));
+        vargs.add("--inputFile " + inputFile);
+        vargs.add("--outputFolder " + outputFolder);
         vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stdout");
         vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stderr");
 

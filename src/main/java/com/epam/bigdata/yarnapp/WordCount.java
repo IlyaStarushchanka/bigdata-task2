@@ -31,37 +31,29 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 public class WordCount {
-    private static final long MEGABYTE = 1024L * 1024L;
     private int containerCount;
     private int tempContainer;
+    private String inputFile;
+    private String outputFolder;
 
     public WordCount() {
         System.out.println("WordCount!");
     }
 
-    public WordCount(int tempContainer, int containerCount) {
+    public WordCount(String inputFile, String outputFolder, int tempContainer, int containerCount) {
+        this.inputFile = inputFile;
+        this.outputFolder = outputFolder;
         this.tempContainer = tempContainer;
         this.containerCount = containerCount;
         System.out.println("WordCount!");
     }
 
-    public static long bytesToMegabytes(long bytes) {
-        return bytes / MEGABYTE;
-    }
-
-    public void printMemoryStats() {
-    /*long freeMemory = bytesToMegabytes(Runtime.getRuntime().freeMemory());
-    long totalMemory = bytesToMegabytes(Runtime.getRuntime().totalMemory());
-    long maxMemory = bytesToMegabytes(Runtime.getRuntime().maxMemory());
-
-    System.out.println("The amount of free memory in the Java Virtual Machine: " + freeMemory);
-    System.out.println("The total amount of memory in the Java virtual machine: " + totalMemory);
-    System.out.println("The maximum amount of memory that the Java virtual machine: " + maxMemory);*/
+    public void searchWords() {
         try{
             Pattern p = Pattern.compile("http[s]*:[^\\s\\r\\n]+");
             List<String> urls = new ArrayList<String>();
 
-            Path pt=new Path(Constants.INPUT_FILE);
+            Path pt=new Path(Constants.FILE_DESTINATION + inputFile);
 
             FileSystem fs2 = FileSystem.get(new Configuration());
             Configuration conf = new Configuration();
@@ -133,7 +125,7 @@ public class WordCount {
 
             System.out.println("STEP 3 " +totalTopWords.size());
             try{
-                Path ptOut=new Path(Constants.OUTPUT_FILE + "part" + tempContainer + ".txt");
+                Path ptOut=new Path(Constants.FILE_DESTINATION + outputFolder + inputFile + "part" + tempContainer);
                 //Configuration conf = new Configuration();
                 conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
                 conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
@@ -180,12 +172,14 @@ public class WordCount {
     }
 
     public static void main(String[] args) {
-        String tempContainer = args[0];
+        String inputFile = args[0];
+        String outputFolder = args[1];
+        String tempContainer = args[2];
         System.out.println(tempContainer);
-        String containerCount = args[1];
+        String containerCount = args[3];
         System.out.println(containerCount);
-        WordCount wordCount = new WordCount(Integer.valueOf(tempContainer), Integer.valueOf(containerCount));
+        WordCount wordCount = new WordCount(inputFile, outputFolder, Integer.valueOf(tempContainer), Integer.valueOf(containerCount));
 
-        wordCount.printMemoryStats();
+        wordCount.searchWords();
     }
 }

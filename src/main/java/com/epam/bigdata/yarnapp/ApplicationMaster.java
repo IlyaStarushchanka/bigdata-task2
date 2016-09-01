@@ -34,6 +34,9 @@ public class ApplicationMaster {
     // No. of containers to run shell command on
     private int numTotalContainers = 1;
 
+    private String inputFile;
+    private String outputFolder;
+
     // Memory to request for the container on which the shell command will run
     private int containerMemory = 10;
 
@@ -139,6 +142,9 @@ public class ApplicationMaster {
         containerMemory = Integer.parseInt(cliParser.getOptionValue("container_memory", "10"));
         containerVirtualCores = Integer.parseInt(cliParser.getOptionValue("container_vcores", "1"));
         numTotalContainers = Integer.parseInt(cliParser.getOptionValue("num_containers", "1"));
+        inputFile = cliParser.getOptionValue("inputFile","tmp/admin/user.profile.tags.us.txt");
+        outputFolder = cliParser.getOptionValue("outputFolder","tmp/admin/");
+
         if (numTotalContainers == 0) {
             throw new IllegalArgumentException("Cannot run ApplicationMaster with no containers");
         }
@@ -266,7 +272,7 @@ public class ApplicationMaster {
                 Collections.singletonList(
                         "$JAVA_HOME/bin/java" +
                                 " -Xmx256M" +
-                                " com.epam.bigdata.yarnapp.WordCount " + allocatedContainers + " " + numTotalContainers +
+                                " com.epam.bigdata.yarnapp.WordCount " + inputFile + outputFolder + allocatedContainers + " " + numTotalContainers +
                                 " 1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stdout" +
                                 " 2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr"
                 )
