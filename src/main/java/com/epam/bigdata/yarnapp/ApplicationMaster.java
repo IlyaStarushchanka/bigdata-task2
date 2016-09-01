@@ -82,6 +82,8 @@ public class ApplicationMaster {
                 "Amount of virtual cores to be requested to run the shell command");
         opts.addOption("num_containers", true,
                 "No. of containers on which the shell command needs to be executed");
+        opts.addOption("inputFile", true, "Path to input file from hdfs");
+        opts.addOption("outputFolder", true, "Path to output folder for output files");
         opts.addOption("priority", true, "Application Priority. Default 0");
         opts.addOption("help", false, "Print usage");
 
