@@ -34,15 +34,13 @@ public class WordCount {
     private int containerCount;
     private int tempContainer;
     private String inputFile;
-    private String outputFolder;
 
     public WordCount() {
         System.out.println("WordCount!");
     }
 
-    public WordCount(String inputFile, String outputFolder, int tempContainer, int containerCount) {
+    public WordCount(String inputFile, int tempContainer, int containerCount) {
         this.inputFile = inputFile;
-        this.outputFolder = outputFolder;
         this.tempContainer = tempContainer;
         this.containerCount = containerCount;
         System.out.println("WordCount!");
@@ -125,7 +123,7 @@ public class WordCount {
 
             System.out.println("STEP 3 " +totalTopWords.size());
             try{
-                Path ptOut=new Path(Constants.FILE_DESTINATION + outputFolder + inputFile + "part" + tempContainer);
+                Path ptOut=new Path(Constants.FILE_DESTINATION + inputFile + "part" + tempContainer);
                 //Configuration conf = new Configuration();
                 conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
                 conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
@@ -173,12 +171,12 @@ public class WordCount {
 
     public static void main(String[] args) {
         String inputFile = args[0];
-        String outputFolder = args[1];
-        String tempContainer = args[2];
+        System.out.println(inputFile);
+        String tempContainer = args[1];
         System.out.println(tempContainer);
-        String containerCount = args[3];
+        String containerCount = args[2];
         System.out.println(containerCount);
-        WordCount wordCount = new WordCount(inputFile, outputFolder, Integer.valueOf(tempContainer), Integer.valueOf(containerCount));
+        WordCount wordCount = new WordCount(inputFile, Integer.valueOf(tempContainer), Integer.valueOf(containerCount));
 
         wordCount.searchWords();
     }

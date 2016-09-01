@@ -28,7 +28,6 @@ public class Client {
     private static final Log LOG = LogFactory.getLog(Client.class);
 
     private String inputFile;
-    private String outputFolder;
 
     // Start time for client
     private final long clientStartTime = System.currentTimeMillis();
@@ -102,7 +101,6 @@ public class Client {
         opts.addOption("container_vcores", true, "Amount of virtual cores to be requested to run the HelloYarn");
         opts.addOption("num_containers", true, "No. of containers on which the HelloYarn needs to be executed");
         opts.addOption("inputFile", true, "Path to input file from hdfs");
-        opts.addOption("outputFolder", true, "Path to output folder for output files");
         opts.addOption("help", false, "Print usage");
     }
 
@@ -158,7 +156,6 @@ public class Client {
         containerVirtualCores = Integer.parseInt(cliParser.getOptionValue("container_vcores", "1"));
         numContainers = Integer.parseInt(cliParser.getOptionValue("num_containers", "1"));
         inputFile = cliParser.getOptionValue("inputFile","tmp/admin/user.profile.tags.us.txt");
-        outputFolder = cliParser.getOptionValue("outputFolder","tmp/admin/");
 
 
         if (containerMemory < 0 || containerVirtualCores < 0 || numContainers < 1) {
@@ -287,7 +284,6 @@ public class Client {
         vargs.add("--num_containers " + String.valueOf(numContainers));
         vargs.add("--priority " + String.valueOf(requestPriority));
         vargs.add("--inputFile " + inputFile);
-        vargs.add("--outputFolder " + outputFolder);
         vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stdout");
         vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stderr");
 
