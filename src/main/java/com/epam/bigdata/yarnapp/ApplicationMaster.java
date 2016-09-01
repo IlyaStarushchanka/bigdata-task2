@@ -274,7 +274,7 @@ public class ApplicationMaster {
                 Collections.singletonList(
                         "$JAVA_HOME/bin/java" +
                                 " -Xmx256M" +
-                                " com.epam.bigdata.yarnapp.WordCount " + inputFile + outputFolder + allocatedContainers + " " + numTotalContainers +
+                                " com.epam.bigdata.yarnapp.WordCount " + inputFile + " " + outputFolder + " " + allocatedContainers + " " + numTotalContainers +
                                 " 1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stdout" +
                                 " 2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr"
                 )
