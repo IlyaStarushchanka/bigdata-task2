@@ -101,11 +101,18 @@ public class WordCount {
                 Document d = null;
                 String text = "";
                 try {
-                    //Jsoup.connect(u).get().outerHtml()
                     text = Jsoup.connect(u).get().text();
                     text = Jsoup.parse(text).text();
                 } catch (IOException e) {
                     System.out.println("Can't connect to " + u);
+                    Pattern p2 = Pattern.compile("(?<=(http[s]*://.*\\.com)).*(?=_.*)");
+                    Matcher m2 = p2.matcher(u);
+                    if (m2.find()){
+                        text = m2.group();
+                    }
+                    //TODO parse URL
+                    text = text.replaceAll("-", " ");
+                    System.out.println(text);
                 }
 
 
