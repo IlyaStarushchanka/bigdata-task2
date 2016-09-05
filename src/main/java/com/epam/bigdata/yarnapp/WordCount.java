@@ -102,9 +102,8 @@ public class WordCount {
                 String text = "";
                 try {
                     //Jsoup.connect(u).get().outerHtml()
-                    d = Jsoup.connect(u).get();
-                    d = Jsoup.parse(d.html());
-                    text = d.text();
+                    text = Jsoup.connect(u).get().text();
+                    text = Jsoup.parse(text).text();
                 } catch (IOException e) {
                     System.out.println("Can't connect to " + u);
                 }
