@@ -31,7 +31,7 @@ public class WordCount {
     private int containerCount;
     private int tempContainer;
     private String inputFile;
-    private String stopWords = "a and for to the you";
+    private String stopWords = "a and for to the you in our with";
 
     public WordCount() {
         System.out.println("WordCount!");
