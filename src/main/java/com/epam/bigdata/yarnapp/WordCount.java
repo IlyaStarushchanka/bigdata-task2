@@ -109,12 +109,16 @@ public class WordCount {
                 }
 
 
-                StringTokenizer tokenizer = new StringTokenizer(text, " .,?!:;()<>[]\b\t\n\f\r\"\'\\");
+                /*StringTokenizer tokenizer = new StringTokenizer(text, " .,?!:;()<>[]\b\t\n\f\r\"\'\\");
                 List<String> words = new ArrayList<String>();
                 while(tokenizer.hasMoreTokens()) {
                     words.add(tokenizer.nextToken());
-//System.out.println(tokenizer.nextToken());
-                }
+                }*/
+
+                List<String> words = Pattern.compile("\\W").splitAsStream(text)
+                        .filter((s -> !s.isEmpty()))
+                        .filter(w -> !Pattern.compile("\\d+").matcher(w).matches())
+                        .collect(toList());
 
                 List<String> topWords = words.stream()
                         .map(String::toLowerCase)
