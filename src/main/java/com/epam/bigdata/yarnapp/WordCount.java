@@ -1,12 +1,12 @@
 package com.epam.bigdata.yarnapp;
 
 import java.io.*;
+import java.net.*;
+import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import java.net.URI;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -101,8 +101,10 @@ public class WordCount {
                 Document d = null;
                 String text = "";
                 try {
+                    //Jsoup.connect(u).get().outerHtml()
                     d = Jsoup.connect(u).get();
-                    text = d.outerHtml();
+                    d = Jsoup.parse(d.html());
+                    text = d.text();
                 } catch (IOException e) {
                     System.out.println("Can't connect to " + u);
                 }
