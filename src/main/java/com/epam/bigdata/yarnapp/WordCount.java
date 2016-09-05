@@ -105,7 +105,7 @@ public class WordCount {
                     text = Jsoup.parse(text).text();
                 } catch (IOException e) {
                     System.out.println("Can't connect to " + u);
-                    Pattern p2 = Pattern.compile("(?<=(http[s]*://.*\\.com)).*(?=_.*)");
+                    Pattern p2 = Pattern.compile("(?<=((http|https)://www.miniinthebox.com/)).*(?=_.*)");
                     Matcher m2 = p2.matcher(u);
                     if (m2.find()){
                         text = m2.group();
