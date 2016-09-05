@@ -31,6 +31,7 @@ public class WordCount {
     private int containerCount;
     private int tempContainer;
     private String inputFile;
+    private String stopWords = "a and for to the you";
 
     public WordCount() {
         System.out.println("WordCount!");
@@ -125,6 +126,7 @@ public class WordCount {
                 List<String> words = Pattern.compile("\\W").splitAsStream(text)
                         .filter((s -> !s.isEmpty()))
                         .filter(w -> !Pattern.compile("\\d+").matcher(w).matches())
+                        .filter(w -> !stopWords.contains(w))
                         .collect(toList());
 
                 List<String> topWords = words.stream()
