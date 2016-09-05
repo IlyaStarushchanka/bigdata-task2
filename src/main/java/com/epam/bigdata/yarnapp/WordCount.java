@@ -182,7 +182,7 @@ public class WordCount {
                 System.out.println(e.getMessage());
             }
         } catch (Exception e){
-
+            System.out.println(e.getMessage());
         }
     }
 
