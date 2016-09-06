@@ -126,10 +126,10 @@ public class Client {
             throw new IllegalArgumentException("No args specified for client to initialize");
         }
 
-        if (cliParser.hasOption("help")) {
+        /*if (cliParser.hasOption("help")) {
             printUsage();
             return false;
-        }
+        }*/
 
         appName = cliParser.getOptionValue("appname", "WordCount");
         amPriority = Integer.parseInt(cliParser.getOptionValue("priority", "0"));

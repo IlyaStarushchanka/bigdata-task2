@@ -21,7 +21,6 @@ import org.apache.hadoop.yarn.util.Records;
 import org.apache.log4j.LogManager;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
