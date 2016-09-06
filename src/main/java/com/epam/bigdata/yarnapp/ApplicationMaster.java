@@ -272,6 +272,7 @@ public class ApplicationMaster {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+
         int offset, count;
         if (allocatedContainers < numTotalContainers){
             count = Math.round(linesCount/numTotalContainers);
@@ -281,6 +282,10 @@ public class ApplicationMaster {
 
         offset = Math.round(linesCount/numTotalContainers)*(allocatedContainers - 1);
 
+        System.out.println("offset = " + offset);
+        System.out.println("count = " + count);
+        System.out.println("allocatedContainers = " + allocatedContainers);
+        System.out.println("numTotalContainers = " + numTotalContainers);
 
         ContainerLaunchContext appContainer =
                 Records.newRecord(ContainerLaunchContext.class);
