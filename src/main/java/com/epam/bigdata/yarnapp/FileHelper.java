@@ -41,6 +41,8 @@ public class FileHelper {
     public static List<String> getLinesFromFile(String filePath, int offset, int count) {
         List<String> lines = new ArrayList<String>();
         try {
+            System.out.println(conf);
+            System.out.println(fileSystem);
             Configuration conf = new Configuration();
             conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
             conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
