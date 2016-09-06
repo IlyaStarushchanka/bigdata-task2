@@ -54,6 +54,7 @@ public class ApplicationMaster {
     // File length needed for local resource
     private long appJarPathLen = 0;
 
+    private int linesCount;
     // Configuration
     private Configuration conf;
 
@@ -209,7 +210,7 @@ public class ApplicationMaster {
             AllocateResponse response = amRMClient.allocate(0);
             for (Container container : response.getAllocatedContainers()) {
                 allocatedContainers++;
-
+                linesCount = FileHelper.getLinesCount(inputFile);
                 ContainerLaunchContext appContainer = createContainerLaunchContext(appMasterJar, containerEnv, allocatedContainers);
                 LOG.info("Launching container " + allocatedContainers);
 
@@ -263,16 +264,6 @@ public class ApplicationMaster {
      */
     private ContainerLaunchContext createContainerLaunchContext(LocalResource appMasterJar,
                                                                 Map<String, String> containerEnv, int allocatedContainers) {
-
-        int linesCount = 0;
-        try {
-            linesCount = FileHelper.getLinesCount(inputFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
         int offset, count;
         if (allocatedContainers < numTotalContainers){
             count = Math.round(linesCount/numTotalContainers);
@@ -281,11 +272,6 @@ public class ApplicationMaster {
         }
 
         offset = Math.round(linesCount/numTotalContainers)*(allocatedContainers - 1);
-
-        System.out.println("offset = " + offset);
-        System.out.println("count = " + count);
-        System.out.println("allocatedContainers = " + allocatedContainers);
-        System.out.println("numTotalContainers = " + numTotalContainers);
 
         ContainerLaunchContext appContainer =
                 Records.newRecord(ContainerLaunchContext.class);
@@ -301,8 +287,6 @@ public class ApplicationMaster {
                                 " 2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr"
                 )
         );
-
-
         return appContainer;
     }
 

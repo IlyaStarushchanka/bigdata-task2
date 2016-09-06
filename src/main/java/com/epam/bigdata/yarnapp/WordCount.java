@@ -47,10 +47,7 @@ public class WordCount {
     public void searchWords() {
         try {
             List<String> lines = FileHelper.getLinesFromFile(inputFile, offset, count);
-
             List<String> urls = UrlHelper.parseUrl(lines);
-
-            System.out.println("STEP 2 " +urls.size());
             List<List<String>> totalTopWords = new ArrayList<>();
             for (String url : urls) {
                 System.out.println(url);
@@ -67,70 +64,25 @@ public class WordCount {
                         .map(String::toLowerCase)
                         .collect(groupingBy(Function.identity(), counting()))
                         .entrySet().stream()
-                        .sorted(Map.Entry.<String, Long> comparingByValue(reverseOrder()).thenComparing(Map.Entry.comparingByKey()))
+                        .sorted(Map.Entry.<String, Long>comparingByValue(reverseOrder()).thenComparing(Map.Entry.comparingByKey()))
                         .limit(10)
                         .map(Map.Entry::getKey)
                         .collect(toList());
                 totalTopWords.add(topWords);
             }
-
-            System.out.println("STEP 3 " +totalTopWords.size());
-            try{
-                FileHelper.writeLinesToFile(Constants.FILE_DESTINATION + inputFile + "part" + offset, lines, totalTopWords);
-                /*Path ptOut=new Path(Constants.FILE_DESTINATION + inputFile + "part" + offset);
-                Configuration conf = new Configuration();
-                conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
-                conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
-
-                FileSystem fsOut = FileSystem.get(new URI("hdfs://sandbox.hortonworks.com:8020"),conf);
-                //FileSystem fsOut = FileSystem.get(new Configuration());
-                BufferedWriter brOut = new BufferedWriter(new OutputStreamWriter(fsOut.create(ptOut,true)));
-
-                brOut.write(FileHelper.topLine);
-                brOut.write("\n");
-                System.out.println("STEP 4");
-                for (int i = 0; i <= count-1; i++){
-                    //for (int i = 0; i < lines.size(); i++) {
-                    String currentLine = lines.get(i);
-                    String[] params = currentLine.split("\\s+");
-                    for (int j = 0; j < params.length; j++) {
-                        if (j == 1) {
-                            List<String> currentTopWords = totalTopWords.get(i);
-
-                            for (int k = 0; k < currentTopWords.size(); k++) {
-                                brOut.write(currentTopWords.get(k));
-                                if (k < (currentTopWords.size()-1)) {
-                                    brOut.write(",");
-                                }
-                            }
-                            brOut.write(" ");
-                        }
-                        brOut.write(params[j]);
-                        if (j < (params.length-1)) {
-                            brOut.write(" ");
-                        }
-                    }
-                    brOut.write("\n");
-                }
-
-                System.out.println("STEP 5");
-                brOut.close();*/
-            }catch(Exception e) {
-                System.out.println(e.getMessage());
-            }
-        } catch (Exception e){
-            System.out.println("TROLOLOLOLOLOLO");
-            System.out.println(e.getMessage());
+            FileHelper.writeLinesToFile(Constants.FILE_DESTINATION + inputFile + "part" + offset, lines, totalTopWords);
+        } catch (IOException e){
+            System.out.println("Some problems with reading or writing file: " + e.getMessage());
+        } catch (URISyntaxException e) {
+            System.out.println("Some problems with path to file: " + e.getMessage());
         }
     }
 
     public static void main(String[] args) {
         String inputFile = args[0];
-        System.out.println(inputFile);
         String offset = args[1];
         String count = args[2];
         WordCount wordCount = new WordCount(inputFile, Integer.valueOf(offset), Integer.valueOf(count));
-
         wordCount.searchWords();
     }
 }
