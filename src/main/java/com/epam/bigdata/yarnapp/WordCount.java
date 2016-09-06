@@ -76,7 +76,8 @@ public class WordCount {
 
             System.out.println("STEP 3 " +totalTopWords.size());
             try{
-                Path ptOut=new Path(Constants.FILE_DESTINATION + inputFile + "part" + offset);
+                FileHelper.writeLinesToFile(Constants.FILE_DESTINATION + inputFile + "part" + offset, lines, totalTopWords);
+                /*Path ptOut=new Path(Constants.FILE_DESTINATION + inputFile + "part" + offset);
                 Configuration conf = new Configuration();
                 conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
                 conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
@@ -113,7 +114,7 @@ public class WordCount {
                 }
 
                 System.out.println("STEP 5");
-                brOut.close();
+                brOut.close();*/
             }catch(Exception e) {
                 System.out.println(e.getMessage());
             }
