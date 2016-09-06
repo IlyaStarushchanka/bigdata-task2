@@ -61,7 +61,6 @@ public class FileHelper {
         conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
 
         FileSystem fsOut = FileSystem.get(new URI("hdfs://sandbox.hortonworks.com:8020"),conf);
-        //FileSystem fsOut = FileSystem.get(new Configuration());
         BufferedWriter brOut = new BufferedWriter(new OutputStreamWriter(fsOut.create(ptOut,true)));
 
         brOut.write(topLine);
@@ -69,8 +68,14 @@ public class FileHelper {
         System.out.println("STEP 4");
         for (int i = 0; i <= lines.size()-1; i++){
             String currentLine = lines.get(i);
-            String totalWords = totalTopWords.get(i).toString();
-            totalWords = totalWords.replaceAll("(\\s|\\[|\\])", "");
+            String totalWords = "";
+            List<String> words = totalTopWords.get(i);
+            for (int j = 0; j < words.size(); j++){
+                if (j > 0){
+                    totalWords += ",";
+                }
+                totalWords += words.get(j);
+            }
             String text = currentLine.replaceFirst("\\s", " " + totalWords);
             brOut.write(text);
             brOut.write("\n");
