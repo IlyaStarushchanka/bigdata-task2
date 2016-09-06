@@ -204,6 +204,7 @@ public class ApplicationMaster {
         // containers and if we miss those notifications, we'll never see them again
         // and this ApplicationMaster will hang indefinitely.
         int completedContainers = 0;
+        FileHelper.initFileHelper();
         while (allocatedContainers < numTotalContainers) {
             AllocateResponse response = amRMClient.allocate(0);
             for (Container container : response.getAllocatedContainers()) {
