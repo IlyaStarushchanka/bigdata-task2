@@ -4,9 +4,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -17,19 +15,14 @@ import java.util.List;
  */
 public class FileHelper {
 
-    public static Configuration conf;
-    public static FileSystem fileSystem;
     public static String topLine;
 
-    public static void initFileHelper() throws URISyntaxException, IOException {
-        conf = new Configuration();
+    public static int getLinesCount (String filePath) throws IOException, URISyntaxException {
+        Path path = new Path(Constants.FILE_DESTINATION + filePath);
+        Configuration conf = new Configuration();
         conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
         conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
-        fileSystem = FileSystem.get(new URI("hdfs://sandbox.hortonworks.com:8020"), conf);
-    }
-
-    public static int getLinesCount (String filePath) throws IOException {
-        Path path = new Path(Constants.FILE_DESTINATION + filePath);
+        FileSystem fileSystem = FileSystem.get(new URI("hdfs://sandbox.hortonworks.com:8020"), conf);
         BufferedReader br = new BufferedReader(new InputStreamReader(fileSystem.open(path)));
         int linesCount = 0;
         while (br.readLine() != null) {
@@ -38,36 +31,70 @@ public class FileHelper {
         return linesCount - 1;
     }
 
-    public static List<String> getLinesFromFile(String filePath, int offset, int count) {
+    public static List<String> getLinesFromFile(String filePath, int offset, int count) throws URISyntaxException, IOException {
         List<String> lines = new ArrayList<String>();
-        try {
-            System.out.println(conf);
-            System.out.println(fileSystem);
-            Configuration conf = new Configuration();
-            conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
-            conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
+        Configuration conf = new Configuration();
+        conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
+        conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
+        FileSystem fileSystem = FileSystem.get(new URI("hdfs://sandbox.hortonworks.com:8020"), conf);
+        Path path = new Path(Constants.FILE_DESTINATION + filePath);
+        BufferedReader br = new BufferedReader(new InputStreamReader(fileSystem.open(path)));
 
-            FileSystem fsOut = FileSystem.get(new URI("hdfs://sandbox.hortonworks.com:8020"),conf);
-            Path path = new Path(Constants.FILE_DESTINATION + filePath);
-            BufferedReader br = new BufferedReader(new InputStreamReader(fsOut.open(path)));
-
-            int currentLine = 0;
-            String line = br.readLine();
-            topLine = line;
-            line = br.readLine();
-            while (line != null || currentLine < offset + count) {
-                if (currentLine >= offset) {
-                    lines.add(line.trim());
-                }
-                line = br.readLine();
-                currentLine++;
+        int currentLine = 0;
+        String line = br.readLine();
+        topLine = line;
+        line = br.readLine();
+        while (line != null || currentLine < offset + count) {
+            if (currentLine >= offset) {
+                lines.add(line.trim());
             }
-        } catch (IOException e){
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+            line = br.readLine();
+            currentLine++;
         }
         return lines;
+    }
+
+    public static void writeLinesToFile(String path, List<String> lines, List<List<String>> totalTopWords) throws URISyntaxException, IOException {
+        Path ptOut=new Path(path);
+        Configuration conf = new Configuration();
+        conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
+        conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
+
+        FileSystem fsOut = FileSystem.get(new URI("hdfs://sandbox.hortonworks.com:8020"),conf);
+        //FileSystem fsOut = FileSystem.get(new Configuration());
+        BufferedWriter brOut = new BufferedWriter(new OutputStreamWriter(fsOut.create(ptOut,true)));
+
+        brOut.write(topLine);
+        brOut.write("\n");
+        System.out.println("STEP 4");
+        for (int i = 0; i <= lines.size()-1; i++){
+            //for (int i = 0; i < lines.size(); i++) {
+            String currentLine = lines.get(i);
+            //String[] params = currentLine.split("\\s+");
+            String text = currentLine.replaceFirst("\\s", totalTopWords.get(i).toString());
+            /*for (int j = 0; j < params.length; j++) {
+                if (j == 1) {
+                    List<String> currentTopWords = totalTopWords.get(i);
+
+                    for (int k = 0; k < currentTopWords.size(); k++) {
+                        brOut.write(currentTopWords.get(k));
+                        if (k < (currentTopWords.size()-1)) {
+                            brOut.write(",");
+                        }
+                    }
+                    brOut.write(" ");
+                }
+                brOut.write(params[j]);
+                if (j < (params.length-1)) {
+                    brOut.write(" ");
+                }
+            }*/
+            brOut.write(text);
+            brOut.write("\n");
+        }
+
+        System.out.println("STEP 5");
+        brOut.close();
     }
 
 }

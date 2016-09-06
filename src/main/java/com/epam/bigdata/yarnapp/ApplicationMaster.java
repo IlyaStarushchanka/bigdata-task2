@@ -21,6 +21,7 @@ import org.apache.hadoop.yarn.util.Records;
 import org.apache.log4j.LogManager;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -204,7 +205,6 @@ public class ApplicationMaster {
         // containers and if we miss those notifications, we'll never see them again
         // and this ApplicationMaster will hang indefinitely.
         int completedContainers = 0;
-        FileHelper.initFileHelper();
         while (allocatedContainers < numTotalContainers) {
             AllocateResponse response = amRMClient.allocate(0);
             for (Container container : response.getAllocatedContainers()) {
@@ -268,6 +268,8 @@ public class ApplicationMaster {
         try {
             linesCount = FileHelper.getLinesCount(inputFile);
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
         int offset, count;

@@ -19,10 +19,8 @@ public class UrlHelper {
 
     public static List<String> parseUrl(List<String> lines/*, int offset, int count*/){
         Pattern urlPattern = Pattern.compile(urlPatternString);
-        List<String> urls = new ArrayList<String>();
-        //for (int i = offset; i <= offset + count-1; i++){
+        List<String> urls = new ArrayList<>();
         for (String line : lines) {
-            //String l = lines.get(i);
             Matcher urlMatcher = urlPattern.matcher(line);
             urlMatcher.matches();
             while (urlMatcher.find()) {

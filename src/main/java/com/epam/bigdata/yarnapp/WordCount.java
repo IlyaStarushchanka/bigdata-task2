@@ -46,46 +46,9 @@ public class WordCount {
 
     public void searchWords() {
         try {
-            //Path pt = new Path(Constants.FILE_DESTINATION + inputFile);
-
-            //FileSystem fs2 = FileSystem.get(new Configuration());
-            /*Configuration conf = new Configuration();
-            conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
-            conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
-
-            FileSystem fs = FileSystem.get(new URI("hdfs://sandbox.hortonworks.com:8020"), conf);*/
-
-            System.out.println("STEP 1 ");
             List<String> lines = FileHelper.getLinesFromFile(inputFile, offset, count);
-            System.out.println("STEP 2 ");
 
-            /*BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(pt)));
-            List<String> lines = new ArrayList<String>();
-
-            String line = br.readLine();
-            String topLine = line;
-            line = br.readLine();
-            while (line != null) {
-                lines.add(line.trim());
-                line = br.readLine();
-            }
-            br.close();*/
-            // ------------ TODO it in ApplicationMaster
-                /*int offset, count;
-                if (tempContainer < containerCount){
-                    count = Math.round(lines.size()/containerCount);
-                } else {
-                    count = lines.size() - Math.round(lines.size()/containerCount)*(containerCount - 1);
-                }
-
-                offset = Math.round(lines.size()/containerCount)*(tempContainer - 1);*/
-            // ------------ TODO it in ApplicationMaster
-
-            /*System.out.println("count = " + count);
-            System.out.println("offset = " + offset);
-            System.out.println("STEP 1 " + lines.size());*/
-
-            List<String> urls = UrlHelper.parseUrl(lines/*, offset, count*/);
+            List<String> urls = UrlHelper.parseUrl(lines);
 
             System.out.println("STEP 2 " +urls.size());
             List<List<String>> totalTopWords = new ArrayList<>();
