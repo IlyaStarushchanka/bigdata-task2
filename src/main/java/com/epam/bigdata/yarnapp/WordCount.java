@@ -55,7 +55,9 @@ public class WordCount {
 
             FileSystem fs = FileSystem.get(new URI("hdfs://sandbox.hortonworks.com:8020"), conf);*/
 
+            System.out.println("STEP 1 ");
             List<String> lines = FileHelper.getLinesFromFile(inputFile, offset, count);
+            System.out.println("STEP 2 ");
 
             /*BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(pt)));
             List<String> lines = new ArrayList<String>();
@@ -153,6 +155,7 @@ public class WordCount {
                 System.out.println(e.getMessage());
             }
         } catch (Exception e){
+            System.out.println("TROLOLOLOLOLOLO");
             System.out.println(e.getMessage());
         }
     }

@@ -38,20 +38,25 @@ public class FileHelper {
         return linesCount - 1;
     }
 
-    public static List<String> getLinesFromFile(String filePath, int offset, int count) throws IOException {
-        Path path = new Path(Constants.FILE_DESTINATION + filePath);
-        BufferedReader br = new BufferedReader(new InputStreamReader(fileSystem.open(path)));
+    public static List<String> getLinesFromFile(String filePath, int offset, int count) {
         List<String> lines = new ArrayList<String>();
-        int currentLine = 0;
-        String line = br.readLine();
-        topLine = line;
-        line = br.readLine();
-        while (line != null || currentLine < offset + count) {
-            if (currentLine >= offset) {
-                lines.add(line.trim());
-            }
+        try {
+            Path path = new Path(Constants.FILE_DESTINATION + filePath);
+            BufferedReader br = new BufferedReader(new InputStreamReader(fileSystem.open(path)));
+
+            int currentLine = 0;
+            String line = br.readLine();
+            topLine = line;
             line = br.readLine();
-            currentLine++;
+            while (line != null || currentLine < offset + count) {
+                if (currentLine >= offset) {
+                    lines.add(line.trim());
+                }
+                line = br.readLine();
+                currentLine++;
+            }
+        } catch (IOException e){
+            System.out.println(e.getMessage());
         }
         return lines;
     }
