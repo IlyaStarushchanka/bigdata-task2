@@ -28,8 +28,8 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 public class WordCount {
-    private int containerCount;
-    private int tempContainer;
+    private int offset;
+    private int count;
     private String inputFile;
     private List<String> stopWords = Arrays.asList("a", "and", "for", "to", "the", "you", "in");
 
@@ -37,25 +37,27 @@ public class WordCount {
         System.out.println("WordCount!");
     }
 
-    public WordCount(String inputFile, int tempContainer, int containerCount) {
+    public WordCount(String inputFile, int offset, int count) {
         this.inputFile = inputFile;
-        this.tempContainer = tempContainer;
-        this.containerCount = containerCount;
+        this.offset = offset;
+        this.count = count;
         System.out.println("WordCount!");
     }
 
     public void searchWords() {
         try {
-            Path pt = new Path(Constants.FILE_DESTINATION + inputFile);
+            //Path pt = new Path(Constants.FILE_DESTINATION + inputFile);
 
             //FileSystem fs2 = FileSystem.get(new Configuration());
-            Configuration conf = new Configuration();
+            /*Configuration conf = new Configuration();
             conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
             conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
 
-            FileSystem fs = FileSystem.get(new URI("hdfs://sandbox.hortonworks.com:8020"), conf);
+            FileSystem fs = FileSystem.get(new URI("hdfs://sandbox.hortonworks.com:8020"), conf);*/
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(pt)));
+            List<String> lines = FileHelper.getLinesFromFile(inputFile, 0, 1);
+
+            /*BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(pt)));
             List<String> lines = new ArrayList<String>();
 
             String line = br.readLine();
@@ -65,21 +67,21 @@ public class WordCount {
                 lines.add(line.trim());
                 line = br.readLine();
             }
-            br.close();
+            br.close();*/
             // ------------ TODO it in ApplicationMaster
-                int offset, count;
+                /*int offset, count;
                 if (tempContainer < containerCount){
                     count = Math.round(lines.size()/containerCount);
                 } else {
                     count = lines.size() - Math.round(lines.size()/containerCount)*(containerCount - 1);
                 }
 
-                offset = Math.round(lines.size()/containerCount)*(tempContainer - 1);
+                offset = Math.round(lines.size()/containerCount)*(tempContainer - 1);*/
             // ------------ TODO it in ApplicationMaster
 
-            System.out.println("count = " + count);
+            /*System.out.println("count = " + count);
             System.out.println("offset = " + offset);
-            System.out.println("STEP 1 " + lines.size());
+            System.out.println("STEP 1 " + lines.size());*/
 
             List<String> urls = UrlHelper.parseUrl(lines/*, offset, count*/);
 
@@ -109,8 +111,8 @@ public class WordCount {
 
             System.out.println("STEP 3 " +totalTopWords.size());
             try{
-                Path ptOut=new Path(Constants.FILE_DESTINATION + inputFile + "part" + tempContainer);
-                //Configuration conf = new Configuration();
+                Path ptOut=new Path(Constants.FILE_DESTINATION + inputFile + "part" + offset);
+                Configuration conf = new Configuration();
                 conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
                 conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
 
@@ -118,16 +120,16 @@ public class WordCount {
                 //FileSystem fsOut = FileSystem.get(new Configuration());
                 BufferedWriter brOut = new BufferedWriter(new OutputStreamWriter(fsOut.create(ptOut,true)));
 
-                brOut.write(topLine);
+                brOut.write(FileHelper.topLine);
                 brOut.write("\n");
                 System.out.println("STEP 4");
-                for (int i = offset; i <= offset + count-1; i++){
+                for (int i = 0; i <= count-1; i++){
                     //for (int i = 0; i < lines.size(); i++) {
                     String currentLine = lines.get(i);
                     String[] params = currentLine.split("\\s+");
                     for (int j = 0; j < params.length; j++) {
                         if (j == 1) {
-                            List<String> currentTopWords = totalTopWords.get(i-offset);
+                            List<String> currentTopWords = totalTopWords.get(i);
 
                             for (int k = 0; k < currentTopWords.size(); k++) {
                                 brOut.write(currentTopWords.get(k));
@@ -158,11 +160,9 @@ public class WordCount {
     public static void main(String[] args) {
         String inputFile = args[0];
         System.out.println(inputFile);
-        String tempContainer = args[1];
-        System.out.println(tempContainer);
-        String containerCount = args[2];
-        System.out.println(containerCount);
-        WordCount wordCount = new WordCount(inputFile, Integer.valueOf(tempContainer), Integer.valueOf(containerCount));
+        String offset = args[1];
+        String count = args[2];
+        WordCount wordCount = new WordCount(inputFile, Integer.valueOf(offset), Integer.valueOf(count));
 
         wordCount.searchWords();
     }

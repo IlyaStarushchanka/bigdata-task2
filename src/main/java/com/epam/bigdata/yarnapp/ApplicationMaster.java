@@ -262,6 +262,23 @@ public class ApplicationMaster {
      */
     private ContainerLaunchContext createContainerLaunchContext(LocalResource appMasterJar,
                                                                 Map<String, String> containerEnv, int allocatedContainers) {
+
+        int linesCount = 0;
+        try {
+            linesCount = FileHelper.getLinesCount(inputFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int offset, count;
+        if (allocatedContainers < numTotalContainers){
+            count = Math.round(linesCount/numTotalContainers);
+        } else {
+            count = linesCount - Math.round(linesCount/numTotalContainers)*(numTotalContainers - 1);
+        }
+
+        offset = Math.round(linesCount/numTotalContainers)*(allocatedContainers - 1);
+
+
         ContainerLaunchContext appContainer =
                 Records.newRecord(ContainerLaunchContext.class);
         appContainer.setLocalResources(
@@ -271,7 +288,7 @@ public class ApplicationMaster {
                 Collections.singletonList(
                         "$JAVA_HOME/bin/java" +
                                 " -Xmx256M" +
-                                " com.epam.bigdata.yarnapp.WordCount " + inputFile + " " + allocatedContainers + " " + numTotalContainers +
+                                " com.epam.bigdata.yarnapp.WordCount " + inputFile + " " + offset + " " + count +
                                 " 1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stdout" +
                                 " 2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr"
                 )
