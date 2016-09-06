@@ -44,7 +44,7 @@ public class FileHelper {
         String line = br.readLine();
         topLine = line;
         line = br.readLine();
-        while (line != null || currentLine < offset + count) {
+        while (line != null && currentLine < offset + count) {
             if (currentLine >= offset) {
                 lines.add(line.trim());
             }
