@@ -68,27 +68,10 @@ public class FileHelper {
         brOut.write("\n");
         System.out.println("STEP 4");
         for (int i = 0; i <= lines.size()-1; i++){
-            //for (int i = 0; i < lines.size(); i++) {
             String currentLine = lines.get(i);
-            //String[] params = currentLine.split("\\s+");
-            String text = currentLine.replaceFirst("\\s", totalTopWords.get(i).toString());
-            /*for (int j = 0; j < params.length; j++) {
-                if (j == 1) {
-                    List<String> currentTopWords = totalTopWords.get(i);
-
-                    for (int k = 0; k < currentTopWords.size(); k++) {
-                        brOut.write(currentTopWords.get(k));
-                        if (k < (currentTopWords.size()-1)) {
-                            brOut.write(",");
-                        }
-                    }
-                    brOut.write(" ");
-                }
-                brOut.write(params[j]);
-                if (j < (params.length-1)) {
-                    brOut.write(" ");
-                }
-            }*/
+            String totalWords = totalTopWords.get(i).toString();
+            totalWords = totalWords.replaceAll("(\\s|\\[|\\])", "");
+            String text = currentLine.replaceFirst("\\s", " " + totalWords);
             brOut.write(text);
             brOut.write("\n");
         }
