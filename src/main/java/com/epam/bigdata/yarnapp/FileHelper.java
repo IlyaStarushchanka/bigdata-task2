@@ -41,8 +41,13 @@ public class FileHelper {
     public static List<String> getLinesFromFile(String filePath, int offset, int count) {
         List<String> lines = new ArrayList<String>();
         try {
+            Configuration conf = new Configuration();
+            conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
+            conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
+
+            FileSystem fsOut = FileSystem.get(new URI("hdfs://sandbox.hortonworks.com:8020"),conf);
             Path path = new Path(Constants.FILE_DESTINATION + filePath);
-            BufferedReader br = new BufferedReader(new InputStreamReader(fileSystem.open(path)));
+            BufferedReader br = new BufferedReader(new InputStreamReader(fsOut.open(path)));
 
             int currentLine = 0;
             String line = br.readLine();
@@ -56,7 +61,9 @@ public class FileHelper {
                 currentLine++;
             }
         } catch (IOException e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
         return lines;
     }
