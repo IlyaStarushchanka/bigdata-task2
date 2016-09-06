@@ -31,7 +31,7 @@ public class WordCount {
     private int containerCount;
     private int tempContainer;
     private String inputFile;
-    private String stopWords = "a and for to the you in our with";
+    private List<String> stopWords = Arrays.asList("a", "and", "for", "to", "the", "you", "in");
 
     public WordCount() {
         System.out.println("WordCount!");
@@ -46,17 +46,15 @@ public class WordCount {
 
     public void searchWords() {
         try {
-            Pattern p = Pattern.compile("http[s]*:[^\\s\\r\\n]+");
-            List<String> urls = new ArrayList<String>();
-
             Path pt = new Path(Constants.FILE_DESTINATION + inputFile);
 
-            FileSystem fs2 = FileSystem.get(new Configuration());
+            //FileSystem fs2 = FileSystem.get(new Configuration());
             Configuration conf = new Configuration();
             conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
             conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
 
             FileSystem fs = FileSystem.get(new URI("hdfs://sandbox.hortonworks.com:8020"), conf);
+
             BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(pt)));
             List<String> lines = new ArrayList<String>();
 
@@ -67,61 +65,30 @@ public class WordCount {
                 lines.add(line.trim());
                 line = br.readLine();
             }
+            br.close();
+            // ------------ TODO it in ApplicationMaster
+                int offset, count;
+                if (tempContainer < containerCount){
+                    count = Math.round(lines.size()/containerCount);
+                } else {
+                    count = lines.size() - Math.round(lines.size()/containerCount)*(containerCount - 1);
+                }
 
-            int offset, count;
-            if (tempContainer < containerCount){
-                count = Math.round(lines.size()/containerCount);
-            } else {
-                count = lines.size() - Math.round(lines.size()/containerCount)*(containerCount - 1);
-            }
+                offset = Math.round(lines.size()/containerCount)*(tempContainer - 1);
+            // ------------ TODO it in ApplicationMaster
 
-            offset = Math.round(lines.size()/containerCount)*(tempContainer - 1);
             System.out.println("count = " + count);
             System.out.println("offset = " + offset);
             System.out.println("STEP 1 " + lines.size());
-      /*for (String l : lines) {
-        Matcher m = p.matcher(l);
-        m.matches();
-        while (m.find()) {
-          urls.add(m.group());
-        }
-      }*/
-            for (int i = offset; i <= offset + count-1; i++){
-                String l = lines.get(i);
-                Matcher m = p.matcher(l);
-                m.matches();
-                while (m.find()) {
-                    urls.add(m.group());
-                }
-            }
-            //List<String> urls = getUrlsFromDB();
+
+            List<String> urls = UrlHelper.parseUrl(lines/*, offset, count*/);
+
             System.out.println("STEP 2 " +urls.size());
             List<List<String>> totalTopWords = new ArrayList<>();
-            for (String u : urls) {
-                System.out.println(u);
-                Document d = null;
-                String text = "";
-                try {
-                    text = Jsoup.connect(u).get().text();
-                    text = Jsoup.parse(text).text();
-                } catch (IOException e) {
-                    System.out.println("Can't connect to " + u);
-                    Pattern p2 = Pattern.compile("(?<=((http|https)://www.miniinthebox.com/)).*(?=_.*)");
-                    Matcher m2 = p2.matcher(u);
-                    if (m2.find()){
-                        text = m2.group();
-                    }
-                    //TODO parse URL
-                    text = text.replaceAll("-", " ");
-                    System.out.println(text);
-                }
+            for (String url : urls) {
+                System.out.println(url);
 
-
-                /*StringTokenizer tokenizer = new StringTokenizer(text, " .,?!:;()<>[]\b\t\n\f\r\"\'\\");
-                List<String> words = new ArrayList<String>();
-                while(tokenizer.hasMoreTokens()) {
-                    words.add(tokenizer.nextToken());
-                }*/
+                String text = UrlHelper.getTextFromUrl(url);
 
                 List<String> words = Pattern.compile("\\W").splitAsStream(text)
                         .filter((s -> !s.isEmpty()))
