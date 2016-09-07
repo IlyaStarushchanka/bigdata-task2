@@ -28,8 +28,8 @@ public class ApplicationMasterNew implements AMRMClientAsync.CallbackHandler{
 
 
 
-    public ApplicationMasterNew(String command, int numContainersToWaitFor) {
-        this.command = command;
+    public ApplicationMasterNew(String inputFile, int numContainersToWaitFor) {
+        this.inputFile = inputFile;
         configuration = new YarnConfiguration();
         this.numContainersToWaitFor = numContainersToWaitFor;
         nmClient = NMClient.createNMClient();
