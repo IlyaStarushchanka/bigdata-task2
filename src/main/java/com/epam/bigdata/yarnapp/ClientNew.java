@@ -34,7 +34,6 @@ public class ClientNew {
     Configuration conf = new YarnConfiguration();
 
     public void run(String[] args) throws Exception {
-        System.out.println(args);
         final String pathToFile = args[0];
         final int n = Integer.valueOf(args[1]);
         final Path jarPath = new Path(args[2]);
