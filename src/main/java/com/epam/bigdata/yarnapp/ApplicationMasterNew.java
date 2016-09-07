@@ -1,16 +1,28 @@
 package com.epam.bigdata.yarnapp;
 
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.yarn.client.api.async.AMRMClientAsync;
+
+import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.yarn.api.ApplicationConstants;
+import org.apache.hadoop.yarn.api.protocolrecords.RegisterApplicationMasterResponse;
 import org.apache.hadoop.yarn.api.records.*;
 import org.apache.hadoop.yarn.client.api.AMRMClient.ContainerRequest;
 import org.apache.hadoop.yarn.client.api.NMClient;
+import org.apache.hadoop.yarn.client.api.async.AMRMClientAsync;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
+import org.apache.hadoop.yarn.util.ConverterUtils;
 import org.apache.hadoop.yarn.util.Records;
 
 /**
@@ -64,12 +76,28 @@ public class ApplicationMasterNew implements AMRMClientAsync.CallbackHandler{
                                         " 1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stdout" +
                                         " 2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr"
                         ));
+                Map<String, String> containerEnv = new HashMap<>();
+                containerEnv.put("CLASSPATH", "./*");
+                ctx.setEnvironment(containerEnv);
+
+                LocalResource appMasterJar = Records.newRecord(LocalResource.class);
+                setupAppMasterJar(Constants.HDFS_MY_APP_JAR_PATH, appMasterJar);
+                ctx.setLocalResources(Collections.singletonMap("simple-app.jar", appMasterJar));
                 System.out.println("[AM] Launching container " + container.getId());
                 nmClient.startContainer(container, ctx);
             } catch (Exception ex) {
                 System.err.println("[AM] Error launching container " + container.getId() + " " + ex);
             }
         }
+    }
+
+    private void setupAppMasterJar(Path jarPath, LocalResource appMasterJar) throws IOException {
+        FileStatus jarStat = FileSystem.get(getConfiguration()).getFileStatus(jarPath);
+        appMasterJar.setResource(ConverterUtils.getYarnUrlFromPath(jarPath));
+        appMasterJar.setSize(jarStat.getLen());
+        appMasterJar.setTimestamp(jarStat.getModificationTime());
+        appMasterJar.setType(LocalResourceType.FILE);
+        appMasterJar.setVisibility(LocalResourceVisibility.PUBLIC);
     }
 
     public void onContainersCompleted(List<ContainerStatus> statuses) {
