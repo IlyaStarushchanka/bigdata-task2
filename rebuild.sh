@@ -10,4 +10,4 @@ hadoop fs -rm -skipTrash /apps/bigdata2/bigdata-task2-1.0-SNAPSHOT-jar-with-depe
 #
 /usr/hdp/2.4.0.0-169/hadoop/bin/hadoop fs -copyFromLocal /root/IdeaProjects/bigdata-task2/target/bigdata-task2-1.0-SNAPSHOT-jar-with-dependencies.jar /apps/bigdata2/bigdata-task2-1.0-SNAPSHOT-jar-with-dependencies.jar
 #
-yarn jar /root/IdeaProjects/bigdata-task2/target/bigdata-task2-1.0-SNAPSHOT-jar-with-dependencies.jar com.epam.bigdata.yarnapp.ClientNew1 tmp/admin/user.profile.tags.us.min.txt 4 hdfs://sandbox.hortonworks.com:8020/apps/bigdata2/bigdata-task2-1.0-SNAPSHOT-jar-with-dependencies.jar
+yarn jar /root/IdeaProjects/bigdata-task2/target/bigdata-task2-1.0-SNAPSHOT-jar-with-dependencies.jar com.epam.bigdata.yarnapp.ClientNew tmp/admin/user.profile.tags.us.min.txt 3 hdfs://sandbox.hortonworks.com:8020/apps/bigdata2/bigdata-task2-1.0-SNAPSHOT-jar-with-dependencies.jar
