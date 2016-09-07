@@ -27,6 +27,7 @@ public class FileHelper {
     }
 
     public static int getLinesCount (String filePath) throws IOException, URISyntaxException {
+        System.out.println(filePath);
         Path path = new Path(Constants.FILE_DESTINATION + filePath);
         initFileHelper();
         BufferedReader br = new BufferedReader(new InputStreamReader(fileSystem.open(path)));
